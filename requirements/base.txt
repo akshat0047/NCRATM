@@ -1,2 +1,5 @@
 opencv-python
 jupyter
+Django==2.2.2
+django-environ===0.4.5
+psycopg2

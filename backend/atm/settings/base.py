@@ -9,13 +9,18 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
 import os
 import environ
 
-ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR.path('project')
+APPLICATION_VERSION = "0.0.0"
 
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(BASE_DIR)
+
+root = environ.Path(__file__) - 1
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -42,9 +47,11 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
+    
 )
 
 LOCAL_APPS = (
+    'apps.detector',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -64,7 +71,8 @@ ROOT_URLCONF = 'atm.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, '..', 'templates'),
+                ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,12 +93,8 @@ WSGI_APPLICATION = 'atm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASS'),
-        'HOST': env('DATABASE_HOST'),
-        'PORT': env('DATABASE_PORT')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -133,11 +137,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = str(ROOT_DIR('staticfiles'))
-
-STATICFILES_DIRS = (
-    str(APPS_DIR.path('static')),
-)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "..", "static")
+]
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -146,4 +148,4 @@ STATICFILES_FINDERS = (
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = str(APPS_DIR('media'))
+MEDIA_ROOT = os.path.join(BASE_DIR, "..", "media")
